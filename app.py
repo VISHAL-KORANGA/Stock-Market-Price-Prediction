@@ -61,7 +61,7 @@ with st.sidebar.expander("About/Project Info", expanded=False):
     """)
 
 # ----- Model Caching -----
-MODEL_PATH = "C:\\Users\\vishal\\Documents\\1.VISHAL\\~PROJECTS\\Stock_Market_Prediction\\GOOGL_Stock_Prediction_Model.keras"
+MODEL_PATH = "GOOGL_Stock_Prediction_Model.keras"
 @st.cache_resource
 def load_trained_model(): return load_model(MODEL_PATH)
 model = load_trained_model()
