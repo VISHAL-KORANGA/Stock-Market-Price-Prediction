@@ -55,9 +55,9 @@ end_date = st.sidebar.date_input("End Date", datetime.strptime("2022-12-31", "%Y
 st.sidebar.markdown("---")
 with st.sidebar.expander("About/Project Info", expanded=False):
     st.write("""
-    **Stock dashboard** app by [Your Name/Team]
+    **Stock dashboard** app by VISHAL SINGH KORANGA
     - Built with Streamlit, Plotly & Tensorflow
-    - [Contact: your@email.com]
+    - Contact: vishalkoranga97@gmail.com
     """)
 
 # ----- Model Caching -----
