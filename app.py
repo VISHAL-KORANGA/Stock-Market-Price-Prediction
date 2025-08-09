@@ -122,7 +122,7 @@ latest = data['Close'].iloc[-1]
 prev = data['Close'].iloc[-2] if len(data['Close'])>1 else latest
 high_52w = data['High'][-252:].max() if len(data['High'])>=252 else data['High'].max()
 low_52w = data['Low'][-252:].min() if len(data['Low'])>=252 else data['Low'].min()
-daily_change = ((latest - prev) / prev * 100) if prev else 0
+daily_change = ((latest - prev) / prev * 100) if pd.notna(prev) and prev != 0 else 0
 volatility = data['Close'].pct_change().std()*100
 
 col1, col2, col3, col4 = st.columns(4)
