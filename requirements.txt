@@ -1,4 +1,3 @@
-The libraries used in this project are:
 streamlit
 yfinance
 plotly
