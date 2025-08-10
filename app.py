@@ -9,7 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 import streamlit as st
 from datetime import datetime
 
-# ----- App Config -----
+# App Config
 st.set_page_config(
     page_title="Stock Market Predictor",
     page_icon=":chart_with_upwards_trend:",
@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ----- App Header -----
+#App Header
 col_title, = st.columns([6])
 with col_title:
     st.title("📈 Stock Market Prediction Dashboard")
@@ -34,7 +34,7 @@ with st.expander("ℹ️ How to Use This Dashboard"):
     - 🛠️ Advanced indicators coming soon!
     """)
 
-# ----- Sidebar -----
+# Sidebar 
 st.sidebar.header("⚙️ Configuration Panel")
 stocks = {
     "Nifty50": "^NSEI", "Tesla": "TSLA", "Facebook/Instagram": "META",
@@ -60,13 +60,13 @@ with st.sidebar.expander("About/Project Info", expanded=False):
     - Contact: vishalkoranga97@gmail.com
     """)
 
-# ----- Model Caching -----
+# Model Caching
 MODEL_PATH = "GOOGL_Stock_Prediction_Model.keras"
 @st.cache_resource
 def load_trained_model(): return load_model(MODEL_PATH)
 model = load_trained_model()
 
-# ----- Synthetic Data Fallback -----
+# Synthetic Data Fallback
 @st.cache_data
 def generate_synthetic_data(symbol, start, end):
     dates = pd.date_range(start=start, end=end)
@@ -110,14 +110,14 @@ def load_stock_data(symbol, start, end, max_retries=3):
     synthetic_data = generate_synthetic_data(symbol, start, end)
     return synthetic_data, True
 
-# ----- Data Load -----
+#  Data Load 
 data, is_synthetic = load_stock_data(stock_symbol, start_date, end_date)
 
 if data is None or data.empty:
     st.error("No stock data found for this symbol and date range.")
     st.stop()
 
-# ----- Key Metrics Tiles -----
+#  Key Metrics Tiles 
 latest = data['Close'].iloc[-1]
 prev = data['Close'].iloc[-2] if len(data['Close'])>1 else latest
 high_52w = data['High'][-252:].max() if len(data['High'])>=252 else data['High'].max()
@@ -131,11 +131,11 @@ col2.metric("52W High", f"${high_52w:.2f}")
 col3.metric("52W Low", f"${low_52w:.2f}")
 col4.metric("Volatility", f"{volatility:.2f}%")
 
-# ----- Synthetic Data Notice -----
+#  Synthetic Data Notice 
 if is_synthetic:
     st.info(":warning: Shown data is realistically simulated due to data fetching issues. Trends/statistics are approximate!")
 
-# ----- Calculate MAs & Technicals -----
+#  Calculate MAs & Technicals 
 data["MA50"] = data["Close"].rolling(50).mean()
 data["MA100"] = data["Close"].rolling(100).mean()
 data["MA200"] = data["Close"].rolling(200).mean()
@@ -143,7 +143,7 @@ data["MA200"] = data["Close"].rolling(200).mean()
 data["BB_up"] = data["MA50"] + 2 * data["Close"].rolling(50).std()
 data["BB_dn"] = data["MA50"] - 2 * data["Close"].rolling(50).std()
 
-# ----- Candlestick Chart + Volume -----
+# Candlestick Chart + Volume
 st.subheader("Candlestick Price Chart & Volume")
 fig1 = go.Figure()
 fig1.add_trace(go.Candlestick(
@@ -177,7 +177,7 @@ fig1.update_layout(
 )
 st.plotly_chart(fig1, use_container_width=True)
 
-# ----- Predictions -----
+# Predictions
 data_train = data["Close"][: int(len(data) * 0.8)]
 data_test = data["Close"][int(len(data) * 0.8):]
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -203,11 +203,11 @@ if x_test.shape[0] > 0:
 else:
     st.warning("Not enough data in selected range for predictions.")
 
-# ----- Additional & Expandable Metrics -----
+# Additional & Expandable Metrics
 with st.expander("📊 Show More Metrics and Explanations", expanded=False):
     st.write("Moving Averages (MA50/MA200), Bollinger Bands, and volume provide insights into trend and volatility. More advanced indicators (RSI, MACD, etc.) coming soon.")
 
-# ----- Data Download -----
+# Data Download 
 st.subheader("📥 Download Chart Data")
 csv = data.to_csv().encode("utf-8")
 st.download_button("Download CSV", csv, f"{stock_symbol}_data.csv", "text/csv")
